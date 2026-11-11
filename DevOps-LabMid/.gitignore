@@ -2,8 +2,10 @@
 __pycache__/
 .pytest_cache/
 *.pyc
-*.db
 .env
+*.db
+*.sqlite3
 test-report.json
-ci-test-report.json
 pytest-results.json
+ci-test-report.json
+testreport.json
