@@ -1,4 +1,3 @@
-
 import json
 import os
 from pathlib import Path
@@ -9,13 +8,15 @@ report = json.loads(
 )
 
 token = os.environ["REPORT_TOKEN"]
+receiver_url = os.environ["RECEIVER_URL"]
 
 response = requests.post(
-    "http://127.0.0.1:5001/report",
+    receiver_url,
     json=report,
     headers={"X-Report-Token": token},
-    timeout=15
+    timeout=30
 )
 
 response.raise_for_status()
-print("Report successfully delivered to localhost!")
+
+print("Report successfully delivered to receiver!")
