@@ -51,7 +51,7 @@ def index():
         title = request.form.get("title", "").strip()
         url = request.form.get("url", "").strip()
 
-        if not all([name, reg_no, title, url]):
+        if not all([name, title, url]):  # Deliberate Defect: reg_no omitted from validation
             flash("All fields are required!", "error")
 
         elif not valid_url(url):
