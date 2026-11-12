@@ -21,3 +21,5 @@ DevOps-LabMid/pytest-results.json
 DevOps-LabMid/ci-test-report.json
 DevOps-LabMid/testreport.json
 
+*.log
+DevOps-LabMid/*.log
