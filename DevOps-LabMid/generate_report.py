@@ -1,13 +1,15 @@
-
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-source = Path("pytest-results.json")
+# Look for pytest json output: check test-report.json then pytest-results.json
+source = Path("test-report.json")
+if not source.exists():
+    source = Path("pytest-results.json")
 
 if not source.exists():
-    raise SystemExit("Pytest report missing")
+    raise SystemExit("Pytest report missing: neither test-report.json nor pytest-results.json was found")
 
 data = json.loads(source.read_text(encoding="utf-8"))
 
@@ -20,7 +22,8 @@ for test in data.get("tests", []):
     for phase in ("setup", "call", "teardown"):
         details = test.get(phase, {})
         if details.get("outcome") == "failed":
-            failure = details.get("longrepr", "Test failed")
+            longrepr = details.get("longrepr", "Test failed")
+            failure = str(longrepr) if longrepr is not None else "Test failed"
             outcome = "failed"
             break
 
@@ -44,6 +47,8 @@ overall_success = (
     and all(t["result"] == "passed" for t in tests)
 )
 
+status = "passed" if overall_success else "failed"
+
 report = {
     "repository": os.getenv("GITHUB_REPOSITORY", "local"),
     "branch": os.getenv("GITHUB_REF_NAME", "local"),
@@ -52,9 +57,13 @@ report = {
     "timestamp": datetime.now(timezone.utc).isoformat(),
     "tests": tests,
     "total": total,
+    "total_count": total,
     "passed": passed,
+    "passed_count": passed,
     "failed": failed,
-    "status": "passed" if overall_success else "failed"
+    "failed_count": failed,
+    "status": status,
+    "overall_status": status
 }
 
 Path("ci-test-report.json").write_text(

@@ -1,47 +1,134 @@
+name: DevOps CI/CD Pipeline
 
-name: DevOps CI Pipeline
-
-on:
+'on':
   push:
     branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   test:
-    name: Run Automated Tests
+    name: Run Automated Tests & Reporting
     runs-on: ubuntu-latest
-
 
     defaults:
       run:
         working-directory: DevOps-LabMid
 
-
     steps:
+      # Step 1: Checkout repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Step 2: Setup Python 3.11
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      # Step 3: Install all required dependencies
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-json-report
+          pip install pytest pytest-json-report requests
 
+      # Step 4: Run automated tests (record outcome, allow reporting to continue)
       - name: Run Automated Tests
+        id: pytest
+        continue-on-error: true
         run: |
-          python -m pytest tests/ -v --json-report --json-report-file=test-report.json
+          python -m pytest tests/ -v \
+            --json-report \
+            --json-report-file=test-report.json
 
-      - name: Upload Test Report
+      # Step 5: Generate custom CI JSON test report from pytest output
+      - name: Generate CI Report
+        if: always()
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          python generate_report.py
+
+      # Step 6: Upload test reports as GitHub Actions artifacts
+      - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: DevOps-Test-Report
-          path: DevOps-LabMid/test-report.json
+          name: DevOps-Test-Reports
+          path: |
+            DevOps-LabMid/test-report.json
+            DevOps-LabMid/ci-test-report.json
           if-no-files-found: warn
+
+      # Step 7: Send report to local receiver via ngrok tunnel
+      - name: Send Report to Receiver
+        if: always()
+        continue-on-error: true
+        env:
+          RECEIVER_URL: ${{ secrets.RECEIVER_URL }}
+          REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
+        run: |
+          if [ -z "$RECEIVER_URL" ] || [ -z "$REPORT_TOKEN" ]; then
+            echo "Notice: Receiver URL or token not configured in GitHub Secrets. Skipping receiver delivery."
+          else
+            python send_report.py
+          fi
+
+      # Step 8: Send email notification report (Bonus)
+      - name: Send Email Report
+        if: always()
+        continue-on-error: true
+        env:
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}
+        run: |
+          python send_email.py
+
+      # Step 9: Enforce test outcome (Fails CI if any test failed)
+      - name: Check Test Result
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.pytest.outcome }}
+        run: |
+          if [ "$TEST_OUTCOME" != "success" ]; then
+            echo "::error::Automated tests failed! Failing CI workflow job."
+            exit 1
+          fi
+          echo "All automated tests PASSED successfully!"
+
+  deploy-pages:
+    name: Deploy GitHub Pages Showcase
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: DevOps-LabMid/static_site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

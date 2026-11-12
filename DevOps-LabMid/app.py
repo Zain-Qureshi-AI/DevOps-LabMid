@@ -44,6 +44,7 @@ def valid_url(url):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    init_db()
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         reg_no = request.form.get("reg_no", "").strip()

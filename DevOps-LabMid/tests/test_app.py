@@ -38,7 +38,7 @@ def test_valid_submission(client):
     assert count_submissions() == 1
 
 
-def test_missing_registration(client):
+def test_missing_registration_number(client):
     response = client.post("/", data={
         "name": "Ali Ahmed",
         "reg_no": "",

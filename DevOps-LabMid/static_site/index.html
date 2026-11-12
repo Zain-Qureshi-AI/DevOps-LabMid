@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DevOps Lab Mid - Assignment Submission Portal (Static Showcase)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+        }
+        .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .notice-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #1e3a8a;
+        }
+        h1 {
+            color: #1e40af;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        p.subtitle {
+            color: var(--muted);
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: var(--primary-dark);
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            display: none;
+            font-weight: 500;
+        }
+        .alert-success { background: #dcfce7; color: var(--success); }
+        .alert-error { background: #fee2e2; color: var(--error); }
+        h2 {
+            margin-top: 36px;
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            font-size: 20px;
+            color: #0f172a;
+        }
+        .submission {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .submission strong {
+            font-size: 16px;
+            color: #1e293b;
+        }
+        .submission p {
+            margin: 4px 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .submission a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        .submission a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="badge">GitHub Actions CI/CD Verified Deployment</div>
+    <h1>Assignment Submission Portal</h1>
+    <p class="subtitle">DevOps Lab Midterm Project Showcase</p>
+
+    <div class="notice-box">
+        <strong>Architecture Notice:</strong> GitHub Pages serves this static demonstration of the submission portal. The production application utilizes a dynamic Python Flask backend with an SQLite database for persistent storage. In this static showcase, submissions are validated and previewed client-side using browser local storage.
+    </div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <form id="submission-form" novalidate>
+        <div class="form-group">
+            <label for="name">Student Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Ali Ahmed">
+        </div>
+        <div class="form-group">
+            <label for="reg_no">Registration Number</label>
+            <input type="text" id="reg_no" name="reg_no" placeholder="e.g. FA23-BAI-001">
+        </div>
+        <div class="form-group">
+            <label for="title">Assignment Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g. DevOps Midterm Project">
+        </div>
+        <div class="form-group">
+            <label for="url">Submission URL (GitHub / Drive)</label>
+            <input type="text" id="url" name="url" placeholder="https://github.com/example/project">
+        </div>
+        <button type="submit">Submit Assignment</button>
+    </form>
+
+    <h2>Saved Submissions</h2>
+    <div id="submissions-list"></div>
+
+    <footer>
+        <p><strong>DevOps-LabMid</strong> | Automated Testing with Pytest | CI/CD via GitHub Actions | Real-time Ngrok Reporting</p>
+    </footer>
+</div>
+
+<script>
+    const form = document.getElementById('submission-form');
+    const alertBox = document.getElementById('alert-box');
+    const submissionsList = document.getElementById('submissions-list');
+
+    const defaultSubmissions = [
+        {
+            name: "Ali Ahmed",
+            reg_no: "FA23-BAI-001",
+            title: "DevOps Assignment",
+            url: "https://github.com/example/project"
+        }
+    ];
+
+    function getSubmissions() {
+        const stored = localStorage.getItem('devops_submissions');
+        return stored ? JSON.parse(stored) : defaultSubmissions;
+    }
+
+    function saveSubmissions(list) {
+        localStorage.setItem('devops_submissions', JSON.stringify(list));
+    }
+
+    function isValidUrl(string) {
+        try {
+            const parsed = new URL(string);
+            return (parsed.protocol === "http:" || parsed.protocol === "https:") &&
+                   parsed.hostname.includes('.') &&
+                   !/\s/.test(string);
+        } catch (_) {
+            return false;
+        }
+    }
+
+    function showAlert(msg, isError) {
+        alertBox.textContent = msg;
+        alertBox.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
+        alertBox.style.display = 'block';
+    }
+
+    function renderSubmissions() {
+        const list = getSubmissions();
+        submissionsList.innerHTML = '';
+        if (list.length === 0) {
+            submissionsList.innerHTML = '<p style="color: #64748b;">No submissions yet.</p>';
+            return;
+        }
+        list.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'submission';
+            div.innerHTML = `
+                <strong>${escapeHtml(item.name)}</strong>
+                <p>Registration: ${escapeHtml(item.reg_no)}</p>
+                <p>Assignment: ${escapeHtml(item.title)}</p>
+                <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">View Submission</a>
+            `;
+            submissionsList.appendChild(div);
+        });
+    }
+
+    function escapeHtml(text) {
+        const p = document.createElement('p');
+        p.textContent = text;
+        return p.innerHTML;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const reg_no = document.getElementById('reg_no').value.trim();
+        const title = document.getElementById('title').value.trim();
+        const url = document.getElementById('url').value.trim();
+
+        if (!name || !reg_no || !title || !url) {
+            showAlert('All fields are required!', true);
+            return;
+        }
+
+        if (!isValidUrl(url)) {
+            showAlert('Invalid submission URL!', true);
+            return;
+        }
+
+        const list = getSubmissions();
+        list.unshift({ name, reg_no, title, url });
+        saveSubmissions(list);
+        showAlert('Assignment submitted successfully!', false);
+        form.reset();
+        renderSubmissions();
+    });
+
+    renderSubmissions();
+</script>
+</body>
+</html>
+
