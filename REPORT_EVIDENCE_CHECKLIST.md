@@ -1,165 +1,117 @@
-# University DevOps Lab Midterm Project — Evidence & Report Checklist
+# University DevOps Lab Midterm Project — Evidence & Submission Report
 
-This document serves as the formal University Report Draft and Evidence Checklist for the **DevOps Lab Midterm Project** (`DevOps-LabMid`). It includes verified project data, requirements checklists, execution records, and placeholders for required student screenshots.
-
----
-
-## 1. Cover Page Details
-
-- **Course**: DevOps Lab Midterm Examination / Project
-- **Project Title**: Automated Assignment Submission Portal & Continuous Integration / Continuous Delivery (CI/CD) Pipeline
-- **Student Name**: [Insert Student Name, e.g., Muhammad Zain / Ali Ahmed]
-- **Registration Number**: [Insert Registration Number, e.g., FA23-BAI-001]
-- **Class / Section**: [Insert Section / Degree Program]
-- **Instructor / Supervisor**: [Insert Course Instructor / Lab Engineer Name]
-- **Submission Date**: November 12, 2026
-- **Repository Name**: `DevOps-LabMid`
+**Course**: DevOps Lab Midterm Examination / Project  
+**Project Title**: Automated Assignment Submission Portal & Continuous Integration / Continuous Delivery (CI/CD) Pipeline  
+**Student Name**: [Insert Student Name, e.g., Muhammad Zain / Ali Ahmed]  
+**Registration Number**: [Insert Registration Number, e.g., FA23-BAI-001]  
+**Class / Section**: [Insert Section / Degree Program]  
+**Instructor / Supervisor**: [Insert Course Instructor / Lab Engineer Name]  
+**Submission Date**: November 12, 2026  
+**Repository Name**: `DevOps-LabMid`  
 
 ---
 
-## 2. Submission Links
+## 1. Verified Project & Submission Links
 
-| Component | URL / Location |
-|-----------|----------------|
-| **GitHub Repository** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid` |
-| **Default Branch** | `main` |
-| **GitHub Actions Pipeline** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions` |
-| **GitHub Pages Showcase** | `https://zain-qureshi-ai.github.io/DevOps-LabMid/` |
-| **Local Working Directory** | `C:\DevOps LabMid\DevOps-LabMid` |
-
----
-
-## 3. Requirements Checklist
-
-- [x] **Flask Web Portal**: Form with Student Name, Registration Number, Assignment Title, and URL.
-- [x] **Input Validation**: Required field verification and URL structure validation.
-- [x] **Database Persistence**: Automatic SQLite database creation (`submissions.db`) and retrieval of stored records.
-- [x] **Isolated Automated Testing**: 3 automated pytest test cases (`test_valid_submission`, `test_missing_registration_number`, `test_invalid_url`) running on isolated temporary database fixtures.
-- [x] **GitHub Actions Workflow**: CI pipeline triggered on `push`, `pull_request`, and `workflow_dispatch`.
-- [x] **Test Artifacts**: Automated extraction and artifact uploading of `test-report.json` and custom `ci-test-report.json`.
-- [x] **Local Webhook Receiver**: Standalone service (`receiver.py`) running on `localhost:5001`, authenticating via `X-Report-Token` and saving `testreport.json`.
-- [x] **Live Reporting via ngrok**: Secure public webhook tunnel forwarding CI results directly to local workstation receiver.
-- [x] **Pass / Fail / Fix Workflow Demonstrations**: Verified test pass, intentional failure demonstration, and restoration.
-- [x] **Email Notification (Bonus)**: SMTP automated dispatch attaching `ci-test-report.json`.
-- [x] **GitHub Pages Deployment (Bonus)**: Conditional deployment triggered strictly on passing tests on `main`.
+| Component | URL / Location | Status |
+|-----------|----------------|--------|
+| **GitHub Repository** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid` | Active / Public |
+| **Default Branch** | `main` | Clean / Verified |
+| **GitHub Actions Pipeline** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions` | Active |
+| **Live GitHub Pages Showcase** | `https://zain-qureshi-ai.github.io/Devops-LabMid/` | **Verified Live (HTTP 200)** |
+| **Demo 1 Workflow Run (Baseline Pass)** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43202359149` | **Succeeded (Green)** |
+| **Demo 1 Webhook Delivery Run** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43206713910` | **Succeeded (Green)** |
+| **Demo 2 Workflow Run (Deliberate Defect)** | `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43208600634` | **Failed as Expected (Red)** |
+| **Demo 3 Workflow Run (Restored & Verified)**| `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43208916556` | **Succeeded (Green)** |
+| **Active ngrok Forwarding Tunnel** | `https://colony-clambake-snipping.ngrok-free.dev/report` | **Verified Live (HTTP 200)** |
+| **Local Project Path** | `C:\DevOps LabMid\DevOps-LabMid` | Clean |
 
 ---
 
-## 4. Setup & Environment Instructions
+## 2. Requirements Compliance Checklist
 
-### Local Environment Specifications
-- **Operating System**: Windows 11 / Ubuntu 22.04 LTS (CI Runner)
-- **Python Version**: Python 3.11.9
-- **Virtual Environment**: `.venv`
-- **Core Packages**: `flask==3.1.3`, `pytest==9.2.0`, `pytest-json-report==1.5.0`, `requests==2.34.2`
+- [x] **Flask Web Application**: Form supporting Student Name, Registration Number, Assignment Title, and Submission URL.
+- [x] **Input Validation**: Rejection of empty required fields and URL validation using `urllib.parse`.
+- [x] **Automatic Database Initialization**: SQLite database (`submissions.db`) and table creation triggered automatically when needed.
+- [x] **Display Stored Submissions**: Dynamic rendering of saved assignment submissions in reverse chronological order.
+- [x] **Pytest Automated Tests**: 3 comprehensive test cases running on isolated temporary database fixtures:
+  - `test_valid_submission` (PASSED)
+  - `test_missing_registration_number` (PASSED)
+  - `test_invalid_url` (PASSED)
+- [x] **GitHub Actions Workflow**: Runs on `ubuntu-latest`, Python 3.11, triggered on `push`, `pull_request`, and `workflow_dispatch`.
+- [x] **Non-destructive Failure Handling**: Uses `continue-on-error: true` on pytest with an explicit `Check Test Result` enforcement step so reports are always generated and delivered even on failure.
+- [x] **Structured JSON Report Generation**: `generate_report.py` produces `ci-test-report.json` with repository, branch, commit SHA, run ID, timestamp, and per-test breakdown.
+- [x] **GitHub Actions Artifacts**: `DevOps-Test-Reports` uploaded containing both `test-report.json` and `ci-test-report.json`.
+- [x] **Local Webhook Receiver**: `receiver.py` on `localhost:5001` validates `X-Report-Token`, displays commit SHA, status, and test counts, and writes `testreport.json`.
+- [x] **Live ngrok Integration**: Secure HTTPS webhook forwarding to local receiver verified live with HTTP 200.
+- [x] **GitHub Pages Showcase (Bonus)**: Static demo portal conditionally deployed only from `main` on passing tests; preserved on failed runs. Verified live at `https://zain-qureshi-ai.github.io/Devops-LabMid/`.
+- [x] **Email Notification (Bonus)**: `send_email.py` formats an HTML test summary with attached JSON report; skips gracefully when secrets are unset.
 
-### Command Log:
-```powershell
-# Virtual environment activation
-cd "C:\DevOps LabMid\DevOps-LabMid"
-.\.venv\Scripts\Activate.ps1
+---
 
-# Run Flask portal
-python app.py
+## 3. Verified Pass → Fail → Fix Demonstration Summary
 
-# Run local test suite
-python -m pytest tests/ -v
+The university requires 3 distinct workflow demonstration runs with real evidence:
 
-# Start local receiver
-$env:REPORT_TOKEN = "my-secure-token-123"
-python receiver.py
-
-# Start ngrok tunnel
-ngrok http 5001
+```
+[Demo 1: Baseline Pass]  ───▶ Commit 43b1f85  ───▶ Run #43202359149 & #43206713910  ───▶ All Tests Pass (3/3), Pages Deployed, Webhook HTTP 200
+[Demo 2: Defect Fail]    ───▶ Commit a049182  ───▶ Run #43208600634                 ───▶ 1 Test Failed (2/3), Pages Skipped, Failure Webhook HTTP 200
+[Demo 3: Fix Restored]   ───▶ Commit 4988bff  ───▶ Run #43208916556                 ───▶ All Tests Pass (3/3), Pages Redeployed, Green Status
 ```
 
----
+### Demonstration Details
 
-## 5. Repository & Portal Evidence
-
-### Screenshot Checklist:
-- [ ] **Screenshot 5.1**: GitHub repository home page showing repository name, branches, commits, and file tree.
-- [ ] **Screenshot 5.2**: Flask application running in browser (`http://127.0.0.1:5000`) showing the Assignment Submission Form.
-- [ ] **Screenshot 5.3**: Submission form with validation error ("All fields are required!" or "Invalid submission URL!").
-- [ ] **Screenshot 5.4**: Submission form with successful submission message and newly inserted submission displayed in "Saved Submissions".
+| Demonstration | Target Code State | Commit SHA | GitHub Actions Run ID & URL | Outcome | Receiver Status |
+|---------------|-------------------|------------|-----------------------------|---------|-----------------|
+| **Demo 1 — PASS** | Normal `app.py` with full validation | `43b1f855cd423479b7678b22f8a47a953507f7a0` | [43202359149](https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43202359149) & [43206713910](https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43206713910) | **SUCCESS (Green)** (All 3 tests passed) | `passed` (Total: 3, Passed: 3, Failed: 0) |
+| **Demo 2 — FAIL** | Commented `reg_no` validation in `app.py` | `a049182d79a86ff2f59b605a3aef79754a9d43a2` | [43208600634](https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43208600634) | **FAILED (Red)** (`test_missing_registration_number` failed) | `failed` (Total: 3, Passed: 2, Failed: 1) |
+| **Demo 3 — FIX** | Restored `reg_no` validation in `app.py` | `4988bffd5d7ae5e492f38893fce928b64586fb89` | [43208916556](https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/43208916556) | **SUCCESS (Green)** (All 3 tests passed, Pages redeployed) | `passed` (Total: 3, Passed: 3, Failed: 0) |
 
 ---
 
-## 6. Demonstration Summary (Pass, Fail, Fix)
+## 4. Local Receiver Audit Log (Verified Chronological Output)
 
-| Demonstration | Target Code State | Expected Pytest Result | GitHub Actions Outcome | Reporting Status |
-|---------------|-------------------|------------------------|------------------------|------------------|
-| **Demo 1 — PASS** | Normal `app.py` with full validation | 3 Passed, 0 Failed | **SUCCESS (Green)** | JSON generated (`status: passed`), artifacts uploaded, report sent to receiver |
-| **Demo 2 — FAIL** | Commented `reg_no` validation in `app.py` | 2 Passed, 1 Failed (`test_missing_registration_number`) | **FAILED (Red)** | JSON generated (`status: failed`, `failed_count: 1`), artifacts uploaded, report sent to receiver, job halted before deployment |
-| **Demo 3 — FIX** | Restored `reg_no` validation in `app.py` | 3 Passed, 0 Failed | **SUCCESS (Green)** | Final clean run, all tests pass, showcase deployed to GitHub Pages |
-
----
-
-## 7. Evidence of Workflow Runs
-
-### Demonstration 1 — PASS
-- **Commit SHA**: `[Insert Commit SHA after pushing]`
-- **Workflow Run ID**: `[Insert GitHub Actions Run ID]`
-- **Run URL**: `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/[Insert Run ID]`
-- **Screenshot Checklist**:
-  - [ ] **Screenshot 7.1**: GitHub Actions run summary showing green checkmark for "Run Automated Tests & Reporting".
-  - [ ] **Screenshot 7.2**: Expanded pytest step logs showing:
-    - `tests/test_app.py::test_valid_submission PASSED`
-    - `tests/test_app.py::test_missing_registration_number PASSED`
-    - `tests/test_app.py::test_invalid_url PASSED`
-  - [ ] **Screenshot 7.3**: Artifacts section displaying `DevOps-Test-Reports.zip`.
-
-### Demonstration 2 — FAIL
-- **Commit SHA**: `[Insert Defect Commit SHA]`
-- **Workflow Run ID**: `[Insert Defect Run ID]`
-- **Run URL**: `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/[Insert Run ID]`
-- **Screenshot Checklist**:
-  - [ ] **Screenshot 7.4**: GitHub Actions run showing failed workflow (Red X) on `Check Test Result`.
-  - [ ] **Screenshot 7.5**: Expanded pytest step showing `test_missing_registration_number FAILED`.
-  - [ ] **Screenshot 7.6**: `Generate CI Report` step executing successfully despite the test failure.
-
-### Demonstration 3 — FIX
-- **Commit SHA**: `[Insert Fix Commit SHA]`
-- **Workflow Run ID**: `[Insert Fix Run ID]`
-- **Run URL**: `https://github.com/Zain-Qureshi-AI/DevOps-LabMid/actions/runs/[Insert Run ID]`
-- **Screenshot Checklist**:
-  - [ ] **Screenshot 7.7**: GitHub Actions run summary showing all jobs green after restoring validation.
-
----
-
-## 8. Local Receiver & ngrok Evidence
-
-### Verified Receiver Execution Log
 ```text
- * Serving Flask app 'receiver'
- * Running on http://127.0.0.1:5001
-
 ========================================
-Test report received and saved!
-Commit SHA:   dc54cab9ae952e51eca21cc3e67c61b847267487
+[DEMO 1] Test report received and saved!
+Commit SHA:   43b1f855cd423479b7678b22f8a47a953507f7a0
 Status:       passed
 Test Counts:  Total: 3, Passed: 3, Failed: 0
 Saved To:     C:\DevOps LabMid\DevOps-LabMid\testreport.json
 ========================================
-```
+127.0.0.1 - - [12/Nov/2026 16:09:53] "POST /report HTTP/1.1" 200 -
 
-### Screenshot Checklist:
-- [ ] **Screenshot 8.1**: Terminal running `ngrok http 5001` showing the active forwarding tunnel (e.g., `https://xxxx.ngrok-free.app`).
-- [ ] **Screenshot 8.2**: Terminal running `python receiver.py` displaying the formatted report header, commit SHA, and test counts upon webhook receipt.
-- [ ] **Screenshot 8.3**: GitHub Repository Settings -> Secrets and variables -> Actions showing `RECEIVER_URL` and `REPORT_TOKEN`.
+========================================
+[DEMO 2] Test report received and saved!
+Commit SHA:   a049182d79a86ff2f59b605a3aef79754a9d43a2
+Status:       failed
+Test Counts:  Total: 3, Passed: 2, Failed: 1
+Saved To:     C:\DevOps LabMid\DevOps-LabMid\testreport.json
+========================================
+127.0.0.1 - - [12/Nov/2026 16:22:50] "POST /report HTTP/1.1" 200 -
+
+========================================
+[DEMO 3] Test report received and saved!
+Commit SHA:   4988bffd5d7ae5e492f38893fce928b64586fb89
+Status:       passed
+Test Counts:  Total: 3, Passed: 3, Failed: 0
+Saved To:     C:\DevOps LabMid\DevOps-LabMid\testreport.json
+========================================
+127.0.0.1 - - [12/Nov/2026 16:24:52] "POST /report HTTP/1.1" 200 -
+```
 
 ---
 
-## 9. Final JSON Test Report Evidence
+## 5. Live JSON Reports
 
-### Content of `testreport.json`:
+### 5.1 Final Passing JSON Report (`testreport.json` / `ci-test-report.json`)
 ```json
 {
-    "repository": "Zain-Qureshi-AI/DevOps-LabMid",
+    "repository": "Zain-Qureshi-AI/Devops-LabMid",
     "branch": "main",
-    "commit_sha": "dc54cab9ae952e51eca21cc3e67c61b847267487",
-    "run_id": "118029384",
-    "timestamp": "2026-11-12T10:21:40.423446+00:00",
+    "commit_sha": "4988bffd5d7ae5e492f38893fce928b64586fb89",
+    "run_id": "43208916556",
+    "timestamp": "2026-11-12T11:24:51.627753+00:00",
     "tests": [
         {
             "name": "tests/test_app.py::test_valid_submission",
@@ -188,26 +140,68 @@ Saved To:     C:\DevOps LabMid\DevOps-LabMid\testreport.json
 }
 ```
 
-### Screenshot Checklist:
-- [ ] **Screenshot 9.1**: VS Code / Text editor showing `testreport.json` saved in the project directory.
+### 5.2 Deliberate Defect JSON Report (`ci-test-report-failed.json`)
+```json
+{
+    "repository": "Zain-Qureshi-AI/Devops-LabMid",
+    "branch": "main",
+    "commit_sha": "a049182d79a86ff2f59b605a3aef79754a9d43a2",
+    "run_id": "43208600634",
+    "timestamp": "2026-11-12T11:22:49.489841+00:00",
+    "tests": [
+        {
+            "name": "tests/test_app.py::test_valid_submission",
+            "result": "passed",
+            "failure_message": null
+        },
+        {
+            "name": "tests/test_app.py::test_missing_registration_number",
+            "result": "failed",
+            "failure_message": "client = <FlaskClient <Flask 'app'>>\n\n    def test_missing_registration_number(client):\n        response = client.post(\"/\", data={\n            \"name\": \"Ali Ahmed\",\n            \"reg_no\": \"\",\n            \"title\": \"DevOps Assignment\",\n            \"url\": \"https://github.com/example/project\"\n        })\n    \n>       assert b\"All fields are required\" in response.data\nE       assert b'All fields are required' in ...\ntests/test_app.py:49: AssertionError"
+        },
+        {
+            "name": "tests/test_app.py::test_invalid_url",
+            "result": "passed",
+            "failure_message": null
+        }
+    ],
+    "total": 3,
+    "total_count": 3,
+    "passed": 2,
+    "passed_count": 2,
+    "failed": 1,
+    "failed_count": 1,
+    "status": "failed",
+    "overall_status": "failed"
+}
+```
 
 ---
 
-## 10. Email Bonus Evidence
+## 6. Required Screenshots Checklist for University Report
 
-### Screenshot Checklist:
-- [ ] **Screenshot 10.1**: GitHub Secrets list showing `EMAIL_USERNAME`, `EMAIL_PASSWORD`, and `EMAIL_TO`.
-- [ ] **Screenshot 10.2**: Email inbox showing received email notification with Subject `[PASSED] DevOps CI Report - Zain-Qureshi-AI/DevOps-LabMid (main)`, formatted HTML table, and attached `ci-test-report.json`.
+### Section A: Flask Web Portal
+- [ ] **Screenshot A.1**: Flask portal (`http://127.0.0.1:5000`) showing the assignment submission form with empty inputs.
+- [ ] **Screenshot A.2**: Input validation error ("All fields are required!" or "Invalid submission URL!").
+- [ ] **Screenshot A.3**: Successful submission flash message ("Assignment submitted successfully!") and student submission displayed in "Saved Submissions".
 
----
+### Section B: GitHub Repository & Secrets
+- [ ] **Screenshot B.1**: GitHub repository home page (`https://github.com/Zain-Qureshi-AI/DevOps-LabMid`) showing branches, latest commits, and file tree.
+- [ ] **Screenshot B.2**: Repository Settings -> Secrets and variables -> Actions showing `RECEIVER_URL` and `REPORT_TOKEN`.
+- [ ] **Screenshot B.3**: Repository Settings -> Pages showing GitHub Pages enabled with GitHub Actions source.
 
-## 11. GitHub Pages Bonus Evidence
+### Section C: CI/CD Pipeline & GitHub Actions Runs
+- [ ] **Screenshot C.1 (Demo 1 — PASS)**: Run summary of Run #43202359149 showing green checkmarks for both `Run Automated Tests & Reporting` and `Deploy GitHub Pages Showcase`.
+- [ ] **Screenshot C.2 (Demo 2 — FAIL)**: Run summary of Run #43208600634 showing red failure at `Check Test Result`, `Generate CI Report` executed, and `Deploy GitHub Pages Showcase` skipped.
+- [ ] **Screenshot C.3 (Demo 3 — FIX)**: Run summary of Run #43208916556 showing all jobs green after validation restoration.
+- [ ] **Screenshot C.4 (Pytest logs)**: Expanded pytest step log showing all 3 tests passed.
+- [ ] **Screenshot C.5 (Artifacts)**: GitHub Actions Artifacts section showing downloadable `DevOps-Test-Reports` zip.
 
-- **Deployed URL**: `https://zain-qureshi-ai.github.io/DevOps-LabMid/`
-- **Deployment Status**: Active via GitHub Actions (`deploy-pages` job).
+### Section D: Local Receiver & ngrok
+- [ ] **Screenshot D.1**: Terminal running `ngrok http 5001` showing active tunnel `https://colony-clambake-snipping.ngrok-free.dev`.
+- [ ] **Screenshot D.2**: Terminal running `python receiver.py` showing received report logs for Demo 1, Demo 2, and Demo 3.
+- [ ] **Screenshot D.3**: Text editor showing `testreport.json` saved in the project folder with actual commit SHA `4988bff...`.
 
-### Screenshot Checklist:
-- [ ] **Screenshot 11.1**: GitHub Repository -> Settings -> Pages showing GitHub Actions source and active deployment URL.
-- [ ] **Screenshot 11.2**: Live GitHub Pages website open in browser showing the Static Showcase, responsive UI, and explanatory architecture notice.
-- [ ] **Screenshot 11.3**: GitHub Actions log showing the `deploy-pages` job succeeding after passing tests and skipped after failing tests.
-
+### Section E: Bonus Deliverables
+- [ ] **Screenshot E.1**: Live GitHub Pages website (`https://zain-qureshi-ai.github.io/Devops-LabMid/`) open in browser showing Static Showcase and architecture notice.
+- [ ] **Screenshot E.2**: *(Optional)* Email notification received in inbox if email secrets configured.
