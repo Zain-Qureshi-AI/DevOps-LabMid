@@ -33,7 +33,7 @@ def test_valid_submission(client):
     }, follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"WRONG MESSAGE THAT WILL FAIL" in response.data
+    assert b"Assignment submitted successfully" in response.data
     assert b"Ali Ahmed" in response.data
     assert count_submissions() == 1
 
