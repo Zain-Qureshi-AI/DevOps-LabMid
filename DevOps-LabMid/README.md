@@ -365,3 +365,4 @@ Automated email reporting is implemented via `send_email.py`.
 test 
 test 
 trigger 
+email test 
