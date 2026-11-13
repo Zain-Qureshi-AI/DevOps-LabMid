@@ -362,3 +362,4 @@ Automated email reporting is implemented via `send_email.py`.
 | `Connection refused on :5001` | Receiver not running or ngrok URL expired | Restart `python receiver.py` and ensure `ngrok http 5001` is active with an updated `RECEIVER_URL`. |
 | `GitHub Actions doesn't run workflow` | Workflow located in subfolder | Workflow must be at repository root `.github/workflows/main.yml`. |
 | `Pages deployment failed 403` | Missing GitHub Pages permission | In Settings -> Actions -> General -> Workflow permissions, select "Read and write permissions". |
+test 
